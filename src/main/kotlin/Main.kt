@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent
 import java.util.*
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.Timer
 
 fun main() {
     val frame = JFrame("Snake Game")
@@ -30,11 +31,16 @@ class Renderer {
     val height = rows * scale
 }
 
+enum class Direction {
+    RIGHT, LEFT, UP, DOWN
+}
+
 class Snake {
+    var direction: Direction = Direction.RIGHT
     var cells: LinkedList<Cell> = LinkedList()
 
     init {
-        val cell = Cell(1, 33)
+        val cell = Cell(0, 0)
         cells.add(cell)
     }
 
@@ -50,19 +56,21 @@ data class Cell(var x: Int, var y: Int)
 
 fun generateMultipleOf10(max: Int) = (0..max / 10).random() * 10
 
-fun generateFoodCell(renderer: Renderer): Cell {
+fun generateFoodCell(): Cell {
     val randomX = generateMultipleOf10(getXOffset())
     val randomY = generateMultipleOf10(getYOffset())
     return Cell(randomX, randomY)
 }
 
 class GamePanel(private val renderer: Renderer): JPanel() {
-    private val cell = Cell(0, 0)
+    private var head: Cell
     private var snake = Snake()
-    private var foodCell = generateFoodCell(renderer)
+    private var foodCell = generateFoodCell()
     private val scale: Int = renderer.scale
 
     init {
+
+        head = snake.cells[0]
 
         isFocusable = true
         requestFocusInWindow()
@@ -72,41 +80,49 @@ class GamePanel(private val renderer: Renderer): JPanel() {
                 super.keyPressed(e)
                 if (e == null) return
                 when (e.keyCode) {
-                    KeyEvent.VK_RIGHT -> moveRight()
-                    KeyEvent.VK_LEFT -> moveLeft()
-                    KeyEvent.VK_UP -> moveUp()
-                    KeyEvent.VK_DOWN -> moveDown()
+                    KeyEvent.VK_RIGHT -> snake.direction = Direction.RIGHT
+                    KeyEvent.VK_LEFT -> snake.direction = Direction.LEFT
+                    KeyEvent.VK_UP -> snake.direction = Direction.UP
+                    KeyEvent.VK_DOWN -> snake.direction = Direction.DOWN
                 }
                 repaint()
             }
         })
-        /*
-        // Timer to move the square every 16 ms (about 60 FPS)
-        Timer(16) {
-            moveSquare()
-            repaint() // Repaint the panel to update the position of the square
+
+        Timer(60) {
+            move(snake.direction)
+            repaint()
         }.start()
-        */
+    }
+
+
+    private fun move(direction: Direction) {
+        when (direction) {
+            Direction.RIGHT -> moveRight()
+            Direction.LEFT -> moveLeft()
+            Direction.UP -> moveUp()
+            Direction.DOWN -> moveDown()
+        }
     }
 
     private fun moveLeft() {
-        if (cell.x <= 0) cell.x = getXOffset()
-        else cell.x -= renderer.scale
+        if (head.x <= 0) head.x = getXOffset()
+        else head.x -= renderer.scale
     }
 
     private fun moveRight() {
-        if (cell.x >= getXOffset()) cell.x = 0
-        else cell.x += renderer.scale
+        if (head.x >= getXOffset()) head.x = 0
+        else head.x += renderer.scale
     }
 
     private fun moveUp() {
-        if (cell.y == 0) cell.y = getYOffset()
-        else cell.y -= renderer.scale
+        if (head.y == 0) head.y = getYOffset()
+        else head.y -= renderer.scale
     }
 
     private fun moveDown() {
-        if (cell.y >= getYOffset()) cell.y = 0
-        else cell.y += renderer.scale
+        if (head.y >= getYOffset()) head.y = 0
+        else head.y += renderer.scale
     }
 
     override fun paintComponent(g: Graphics) {
@@ -115,8 +131,11 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         val width = renderer.width
         val height = renderer.height
 
-        if (foodFound(cell, foodCell)) {
-            foodCell = generateFoodCell(renderer)
+        if (foodFound(head, foodCell)) {
+            foodCell = generateFoodCell()
+
+            val newCell = Cell(head.x - 1, head.y - 1)
+            snake.cells.add(newCell)
         }
 
         g.clearRect(0, 0, width, height)
@@ -125,7 +144,7 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         fillCell(g, foodCell)
 
         g.color = Color.GREEN
-        fillCell(g, cell)
+        fillCell(g, head)
 
         g.color = Color.BLACK
         snake.cells.map {
