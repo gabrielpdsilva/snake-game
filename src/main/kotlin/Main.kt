@@ -85,18 +85,17 @@ class GamePanel(private val renderer: Renderer): JPanel() {
                     KeyEvent.VK_UP -> snake.direction = Direction.UP
                     KeyEvent.VK_DOWN -> snake.direction = Direction.DOWN
                 }
-                repaint()
             }
         })
 
-        Timer(60) {
+        Timer(100) {
             move(snake.direction)
             repaint()
         }.start()
     }
 
-
     private fun move(direction: Direction) {
+        println(snake.cells)
         when (direction) {
             Direction.RIGHT -> moveRight()
             Direction.LEFT -> moveLeft()
@@ -108,21 +107,53 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     private fun moveLeft() {
         if (head.x <= 0) head.x = getXOffset()
         else head.x -= renderer.scale
+
+        for ((index, cell) in snake.cells.withIndex()) {
+            if (index != 0) {
+                val previousCellIndex = index - 1
+                cell.x = snake.cells[previousCellIndex].x + renderer.scale
+                cell.y = snake.cells[previousCellIndex].y
+            }
+        }
     }
 
     private fun moveRight() {
         if (head.x >= getXOffset()) head.x = 0
         else head.x += renderer.scale
+
+        for ((index, cell) in snake.cells.withIndex()) {
+            if (index != 0) {
+                val previousCellIndex = index - 1
+                cell.x = snake.cells[previousCellIndex].x - renderer.scale
+                cell.y = snake.cells[previousCellIndex].y
+            }
+        }
     }
 
     private fun moveUp() {
         if (head.y == 0) head.y = getYOffset()
         else head.y -= renderer.scale
+
+        for ((index, cell) in snake.cells.withIndex()) {
+            if (index != 0) {
+                val previousCellIndex = index - 1
+                cell.x = snake.cells[previousCellIndex].x
+                cell.y = snake.cells[previousCellIndex].y + renderer.scale
+            }
+        }
     }
 
     private fun moveDown() {
         if (head.y >= getYOffset()) head.y = 0
         else head.y += renderer.scale
+
+        for ((index, cell) in snake.cells.withIndex()) {
+            if (index != 0) {
+                val previousCellIndex = index - 1
+                cell.x = snake.cells[previousCellIndex].x
+                cell.y = snake.cells[previousCellIndex].y - renderer.scale
+            }
+        }
     }
 
     override fun paintComponent(g: Graphics) {
@@ -134,7 +165,7 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         if (foodFound(head, foodCell)) {
             foodCell = generateFoodCell()
 
-            val newCell = Cell(head.x - 1, head.y - 1)
+            val newCell = Cell(head.x, head.y)
             snake.cells.add(newCell)
         }
 
