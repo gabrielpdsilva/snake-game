@@ -14,10 +14,11 @@ fun main() {
     val panel = GamePanel(renderer)
 
     frame.add(panel)
-    frame.setSize(renderer.width, renderer.height)
-
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+
+    frame.setSize(renderer.width, renderer.height)
     frame.setLocationRelativeTo(null)
+
     frame.isResizable = false
     frame.isVisible = true
 }
