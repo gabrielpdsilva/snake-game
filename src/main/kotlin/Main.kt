@@ -80,10 +80,10 @@ class GamePanel(private val renderer: Renderer): JPanel() {
                 super.keyPressed(e)
                 if (e == null) return
                 when (e.keyCode) {
-                    KeyEvent.VK_RIGHT -> snake.direction = Direction.RIGHT
-                    KeyEvent.VK_LEFT -> snake.direction = Direction.LEFT
-                    KeyEvent.VK_UP -> snake.direction = Direction.UP
-                    KeyEvent.VK_DOWN -> snake.direction = Direction.DOWN
+                    KeyEvent.VK_LEFT -> if (snake.direction != Direction.RIGHT) snake.direction = Direction.LEFT
+                    KeyEvent.VK_RIGHT -> if (snake.direction != Direction.LEFT) snake.direction = Direction.RIGHT
+                    KeyEvent.VK_UP -> if (snake.direction != Direction.DOWN) snake.direction = Direction.UP
+                    KeyEvent.VK_DOWN -> if (snake.direction != Direction.UP) snake.direction = Direction.DOWN
                 }
             }
         })
@@ -95,8 +95,6 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     }
 
     private fun move(direction: Direction) {
-        println(snake.cells)
-
         val originalPositions = snake.cells.map {
             it.copy()
         }
@@ -104,8 +102,8 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         for ((index, cell) in snake.cells.withIndex()) {
             if (index == 0) {
                 when (direction) {
-                    Direction.RIGHT -> moveToTheRight()
                     Direction.LEFT -> moveToTheLeft()
+                    Direction.RIGHT -> moveToTheRight()
                     Direction.UP -> moveToTheTop()
                     Direction.DOWN -> moveToTheBottom()
                 }
