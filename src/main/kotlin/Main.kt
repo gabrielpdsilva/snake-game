@@ -45,8 +45,13 @@ class Snake {
         cells.add(cell)
     }
 
-    fun hasTouchedItself(head: Cell): Boolean {
-        val found = cells.find { cell ->
+    fun hasTouchedItself(): Boolean {
+        if (cells.size == 1) return false
+
+        val head = cells[0]
+        val found = cells.withIndex().firstOrNull {
+            if (it.index == 0) return false
+            val cell = it.value
             return cell.x == head.x && cell.y == head.y
         }
         return found != null
@@ -90,6 +95,7 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         })
 
         Timer(100) {
+            println(snake.cells.toString())
             move(snake.direction)
             repaint()
         }.start()
@@ -145,6 +151,9 @@ class GamePanel(private val renderer: Renderer): JPanel() {
 
         val width = renderer.width
         val height = renderer.height
+
+        // TODO finish
+        if (snake.hasTouchedItself()) println("touched!")
 
         if (foodFound(foodCell)) {
             val newCell = Cell(head.x, head.y)
