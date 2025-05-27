@@ -44,9 +44,9 @@ class Snake {
         cells.add(cell)
     }
 
-    fun hasTouchedItself(newCell: Cell): Boolean {
-        val found = cells.find {
-            return it.x == newCell.x && it.y == newCell.y
+    fun hasTouchedItself(head: Cell): Boolean {
+        val found = cells.find { cell ->
+            return cell.x == head.x && cell.y == head.y
         }
         return found != null
     }
@@ -118,14 +118,18 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     }
 
     private fun moveRight() {
-        if (head.x >= getXOffset()) head.x = 0
-        else head.x += renderer.scale
+        val originalPositions = snake.cells.map {
+            it.copy()
+        }
 
         for ((index, cell) in snake.cells.withIndex()) {
-            if (index != 0) {
+            if (index == 0) {
+                if (cell.x >= getXOffset()) cell.x = 0
+                else cell.x += renderer.scale
+            } else {
                 val previousCellIndex = index - 1
-                cell.x = snake.cells[previousCellIndex].x - renderer.scale
-                cell.y = snake.cells[previousCellIndex].y
+                cell.x = originalPositions[previousCellIndex].x
+                cell.y = originalPositions[previousCellIndex].y
             }
         }
     }
