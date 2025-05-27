@@ -100,7 +100,7 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         }
 
         for ((index, cell) in snake.cells.withIndex()) {
-            if (index == 0) {
+            if (isHead(index)) {
                 when (direction) {
                     Direction.LEFT -> moveToTheLeft()
                     Direction.RIGHT -> moveToTheRight()
@@ -135,17 +135,21 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         else head.y += renderer.scale
     }
 
+    private fun foodFound(foodCell: Cell): Boolean {
+        return head.x == foodCell.x && head.y == foodCell.y
+    }
+
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
 
         val width = renderer.width
         val height = renderer.height
 
-        if (foodFound(head, foodCell)) {
-            foodCell = generateFoodCell()
-
+        if (foodFound(foodCell)) {
             val newCell = Cell(head.x, head.y)
             snake.cells.add(newCell)
+
+            foodCell = generateFoodCell()
         }
 
         g.clearRect(0, 0, width, height)
@@ -167,8 +171,8 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     }
 }
 
-fun foodFound(cell: Cell, foodCell: Cell) = cell.x == foodCell.x && cell.y == foodCell.y
-
 fun getXOffset() = 280
 
 fun getYOffset() = 260
+
+fun isHead(index: Int) = index == 0
