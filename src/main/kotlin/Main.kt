@@ -96,36 +96,19 @@ class GamePanel(private val renderer: Renderer): JPanel() {
 
     private fun move(direction: Direction) {
         println(snake.cells)
-        when (direction) {
-            Direction.RIGHT -> moveRight()
-            Direction.LEFT -> moveLeft()
-            Direction.UP -> moveUp()
-            Direction.DOWN -> moveDown()
-        }
-    }
 
-    private fun moveLeft() {
-        if (head.x <= 0) head.x = getXOffset()
-        else head.x -= renderer.scale
-
-        for ((index, cell) in snake.cells.withIndex()) {
-            if (index != 0) {
-                val previousCellIndex = index - 1
-                cell.x = snake.cells[previousCellIndex].x + renderer.scale
-                cell.y = snake.cells[previousCellIndex].y
-            }
-        }
-    }
-
-    private fun moveRight() {
         val originalPositions = snake.cells.map {
             it.copy()
         }
 
         for ((index, cell) in snake.cells.withIndex()) {
             if (index == 0) {
-                if (cell.x >= getXOffset()) cell.x = 0
-                else cell.x += renderer.scale
+                when (direction) {
+                    Direction.RIGHT -> moveToTheRight()
+                    Direction.LEFT -> moveToTheLeft()
+                    Direction.UP -> moveToTheTop()
+                    Direction.DOWN -> moveToTheBottom()
+                }
             } else {
                 val previousCellIndex = index - 1
                 cell.x = originalPositions[previousCellIndex].x
@@ -134,30 +117,24 @@ class GamePanel(private val renderer: Renderer): JPanel() {
         }
     }
 
-    private fun moveUp() {
-        if (head.y == 0) head.y = getYOffset()
-        else head.y -= renderer.scale
-
-        for ((index, cell) in snake.cells.withIndex()) {
-            if (index != 0) {
-                val previousCellIndex = index - 1
-                cell.x = snake.cells[previousCellIndex].x
-                cell.y = snake.cells[previousCellIndex].y + renderer.scale
-            }
-        }
+    private fun moveToTheLeft() {
+        if (head.x <= 0) head.x = getXOffset()
+        else head.x -= renderer.scale
     }
 
-    private fun moveDown() {
+    private fun moveToTheRight() {
+        if (head.x >= getXOffset()) head.x = 0
+        else head.x += renderer.scale
+    }
+
+    private fun moveToTheTop() {
+        if (head.y == 0) head.y = getYOffset()
+        else head.y -= renderer.scale
+    }
+
+    private fun moveToTheBottom() {
         if (head.y >= getYOffset()) head.y = 0
         else head.y += renderer.scale
-
-        for ((index, cell) in snake.cells.withIndex()) {
-            if (index != 0) {
-                val previousCellIndex = index - 1
-                cell.x = snake.cells[previousCellIndex].x
-                cell.y = snake.cells[previousCellIndex].y - renderer.scale
-            }
-        }
     }
 
     override fun paintComponent(g: Graphics) {
