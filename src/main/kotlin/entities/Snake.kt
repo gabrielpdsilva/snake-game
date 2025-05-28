@@ -1,9 +1,8 @@
 package entities
 
 import enums.Direction
-import ui.getXOffset
-import ui.getYOffset
-import ui.isHead
+import getXOffset
+import getYOffset
 import java.util.LinkedList
 
 class Snake(private val scale: Int) {
@@ -14,9 +13,7 @@ class Snake(private val scale: Int) {
     init {
         val cell = Cell(0, 0)
         cells.add(cell)
-
         head = cells[0]
-
     }
 
     fun hasTouchedItself(): Boolean {
@@ -55,6 +52,8 @@ class Snake(private val scale: Int) {
             }
         }
     }
+
+    private fun isHead(index: Int) = index == 0
 
     private fun moveToTheLeft() {
         if (head.x <= 0) head.x = getXOffset()

@@ -1,17 +1,17 @@
 import ui.GamePanel
-import ui.Renderer
+import ui.RendererConfig
 import javax.swing.JFrame
 
 fun main() {
     val frame = JFrame("Snake Game")
 
-    val renderer = Renderer()
-    val panel = GamePanel(renderer)
+    val rendererConfig = RendererConfig()
+    val panel = GamePanel(rendererConfig)
 
     frame.add(panel)
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 
-    frame.setSize(renderer.width, renderer.height)
+    frame.setSize(rendererConfig.width, rendererConfig.height)
     frame.setLocationRelativeTo(null)
 
     frame.isResizable = false

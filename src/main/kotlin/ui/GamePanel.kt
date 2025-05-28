@@ -3,6 +3,7 @@ package ui
 import entities.Cell
 import entities.Snake
 import enums.Direction
+import generateFoodCell
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyAdapter
@@ -10,11 +11,11 @@ import java.awt.event.KeyEvent
 import javax.swing.JPanel
 import javax.swing.Timer
 
-class GamePanel(private val renderer: Renderer): JPanel() {
+class GamePanel(private val rendererConfig: RendererConfig): JPanel() {
 
-    private var snake = Snake(renderer.scale)
+    private var snake = Snake(rendererConfig.scale)
     private var foodCell = generateFoodCell()
-    private val scale: Int = renderer.scale
+    private val scale: Int = rendererConfig.scale
 
     init {
         isFocusable = true
@@ -33,7 +34,7 @@ class GamePanel(private val renderer: Renderer): JPanel() {
             }
         })
 
-        Timer(100) {
+        Timer(rendererConfig.timer) {
             snake.move()
             repaint()
         }.start()
@@ -42,8 +43,8 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
 
-        val width = renderer.width
-        val height = renderer.height
+        val width = rendererConfig.width
+        val height = rendererConfig.height
 
         // TODO finish
         if (snake.hasTouchedItself()) println("touched!")
@@ -69,18 +70,4 @@ class GamePanel(private val renderer: Renderer): JPanel() {
     private fun fillCell(g: Graphics, cell: Cell) {
         g.fillRect(cell.x, cell.y, scale, scale)
     }
-}
-
-fun getXOffset() = 280
-
-fun getYOffset() = 260
-
-fun isHead(index: Int) = index == 0
-
-fun generateMultipleOf10(max: Int) = (0..max / 10).random() * 10
-
-fun generateFoodCell(): Cell {
-    val randomX = generateMultipleOf10(getXOffset())
-    val randomY = generateMultipleOf10(getYOffset())
-    return Cell(randomX, randomY)
 }
