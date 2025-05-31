@@ -3,10 +3,10 @@ import ui.RendererConfig
 import javax.swing.JFrame
 
 fun main() {
-    val frame = JFrame("Snake Game")
-
     val rendererConfig = RendererConfig()
     val panel = GamePanel(rendererConfig)
+
+    val frame = JFrame("Snake Game")
 
     frame.add(panel)
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE

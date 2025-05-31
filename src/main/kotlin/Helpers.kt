@@ -11,5 +11,3 @@ fun generateFoodCell(): Cell {
     val randomY = generateMultipleOf10(getYOffset())
     return Cell(randomX, randomY)
 }
-
-// TODO move these files to another place

@@ -7,8 +7,8 @@ import java.util.LinkedList
 
 class Snake(private val scale: Int) {
     var direction: Direction = Direction.RIGHT
+    val head: Cell = Cell(0, 0)
     var cells: LinkedList<Cell> = LinkedList()
-    var head: Cell = Cell(0, 0)
 
     init {
         cells.add(head)
@@ -17,13 +17,12 @@ class Snake(private val scale: Int) {
     fun hasTouchedItself(): Boolean {
         if (!hasBody()) return false
 
-        val found = cells.withIndex().firstOrNull {
-            if (isHead(it.index)) return false
-            val cell = it.value
-            return cell.x == head.x && cell.y == head.y
+        var found = false
+        for ((index, cell) in cells.withIndex()) {
+            if (isHead(index)) found = false
+            else if (cell.x == head.x && cell.y == head.y) found = true
         }
-
-        return found != null
+        return found
     }
 
     fun hasFoundFood(foodCell: Cell): Boolean {
