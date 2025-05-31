@@ -17,12 +17,9 @@ class Snake(private val scale: Int) {
     fun hasTouchedItself(): Boolean {
         if (!hasBody()) return false
 
-        var found = false
-        for ((index, cell) in cells.withIndex()) {
-            if (isHead(index)) found = false
-            else if (cell.x == head.x && cell.y == head.y) found = true
-        }
-        return found
+        return cells.withIndex()
+            .filterNot {(index) -> isHead(index) }
+            .any { it.value.x == head.x && it.value.y == head.y }
     }
 
     fun hasFoundFood(foodCell: Cell): Boolean {
