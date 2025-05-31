@@ -31,7 +31,7 @@ class Snake(private val scale: Int) {
             it.copy()
         }
 
-        for ((index, cell) in cells.withIndex()) {
+        cells.withIndex().forEach { (index, cell) ->
             if (isHead(index)) {
                 when (direction) {
                     Direction.LEFT -> moveToTheLeft()
