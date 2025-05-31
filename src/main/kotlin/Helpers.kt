@@ -1,8 +1,9 @@
 import entities.Cell
 
-fun getXOffset() = 280
+// TODO fix offset
+fun getXOffset() = 290
 
-fun getYOffset() = 260
+fun getYOffset() = 270
 
 fun generateMultipleOf10(max: Int) = (0..max / 10).random() * 10
 

@@ -46,8 +46,10 @@ class GamePanel(private val rendererConfig: RendererConfig): JPanel() {
         val width = rendererConfig.width
         val height = rendererConfig.height
 
-        // TODO finish
-        if (snake.hasTouchedItself()) snake = Snake(rendererConfig.scale)
+        if (snake.hasTouchedItself()) {
+            snake = Snake(rendererConfig.scale)
+            foodCell = generateFoodCell()
+        }
 
         if (snake.hasFoundFood(foodCell)) {
             val newCell = Cell(snake.head.x, snake.head.y)
@@ -56,6 +58,7 @@ class GamePanel(private val rendererConfig: RendererConfig): JPanel() {
             foodCell = generateFoodCell()
         }
 
+        println("height ${height}, width ${width}")
         g.clearRect(0, 0, width, height)
 
         g.color = Color.RED
