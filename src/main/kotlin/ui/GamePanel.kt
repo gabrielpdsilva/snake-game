@@ -58,7 +58,6 @@ class GamePanel(private val rendererConfig: RendererConfig): JPanel() {
             foodCell = generateFoodCell()
         }
 
-        println("height ${height}, width ${width}")
         g.clearRect(0, 0, width, height)
 
         g.color = Color.RED
